@@ -25,8 +25,8 @@ companies_list = []
                                         country='India',
                                         interval='Weekly')
 
-#print(df2)
-'''
+print(df2)
+
 data = investpy.get_stock_financial_summary(stock='HDBK',
                                         country='India', summary_type='income_statement', period='annual')
 data2 = investpy.get_stock_financial_summary(stock='HDBK',
@@ -36,16 +36,26 @@ data3 = investpy.get_stock_financial_summary(stock='HDBK',
 print(data)
 print(data2)
 print(data3)
+'''
 
-
-
-def loadStocks():
-    stocks = investpy.stocks.get_stocks(country='India').head(10)
-    return stocks_dict
 
 def loadHistoricalData(stock):
-    pass
+    df = investpy.get_stock_historical_data(stock=stock,
+                                        country='India',
+                                        from_date='01/01/2010',
+                                        to_date='01/01/2020')
+
+    df = df.drop('Currency', axis=1)
+    
+
+    print(df)
+
+def loadStocks():
+    stocks = investpy.stocks.get_stocks_list(country='India')
+    return stocks
 
 
+
+loadHistoricalData('HDBK')
 
 
