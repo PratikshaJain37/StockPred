@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+   <div class="jumbotron text-center">
+      <h1> <a href="/">StockPred</a> </h1>
+         <p class="lead"> We Predict Future :) </p>
+      <h2> Results </h2>
+   </div>
+   <p> {{ result }} </p>
+   <img src={{ result }}>
+{% endblock %}
