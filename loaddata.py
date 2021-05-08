@@ -7,8 +7,6 @@ import numpy as np
 import pandas as pd
 import investpy
 
-
-companies_list = []
 '''
 #df = investpy.get_stock_historical_data(stock='HDBK',
                                         country='India',
@@ -46,16 +44,20 @@ def loadHistoricalData(stock):
                                         to_date='01/01/2020')
 
     df = df.drop('Currency', axis=1)
-    
+    df.to_csv('stock_details/%s.csv'%(stock))
 
-    print(df)
-
-def loadStocks():
+def loadStocks(specific_stocks=[], max_stocks=20):
     stocks = investpy.stocks.get_stocks_list(country='India')
-    return stocks
+    stocks = [i for i in stocks if not i in specific_stocks]
+    stocks = stocks[:(max_stocks-len(specific_stocks))]
+    stocks_req = stocks+specific_stocks
 
+    for stock in stocks_req:
+        loadHistoricalData(stock)
+        print(stock, ' done')
+    
+    return stocks_req
 
-
-loadHistoricalData('HDBK')
+stocks = loadStocks()
 
 
