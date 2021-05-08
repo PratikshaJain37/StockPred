@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 from loaddata import loadStock
 from Stockpred import generateTable
+from currentData import getCurrentPrice
+
 import warnings
 
 app = Flask(__name__)
@@ -45,10 +47,11 @@ def add():
          return render_template("error.html")
       else:
          
-         currentprice = 10
+         currentprice = getCurrentPrice(stock_name)
          table = generateTable(stock_name, dates=["2021-5-10"])
-         predicted_high = 10
-         predicted_low = 10
+
+         predicted_high = table.loc[0, 'Pred_High']
+         predicted_low = table.loc[0, 'Pred_Low']
          currentreturn = (currentprice - buy_price) * quantity
          predictedreturn = (predicted_high - buy_price) * quantity
          
