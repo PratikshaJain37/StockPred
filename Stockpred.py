@@ -1,9 +1,9 @@
 """
-Created on Sat May  8 16:09:37 2021
+Stockpred.py - Predicting stock price using ML models on historical data
 
-@author: JOKER
-Edited by: Pratiksha Jain
+@authors: Shubham Saurav, Pratiksha Jain
 """
+# --------------------------------- #
 
 # Imports needed
 import pandas as pd
@@ -21,14 +21,26 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
+# --------------------------------- #
 
+#### TESTING USAGE ONLY ####
+# Variables 
 
-# Put stock here
-stock = 'ABB'
-# Future prediction, add dates here for which you want to predict
 dates = ["2021-5-9", "2021-5-10", "2021-5-11", "2021-5-12", "2021-5-13"]
- 
+stock = "TISC"
+models = []
+models.append(('LR ', LinearRegression()))
+models.append(('LASSO ', Lasso()))
+models.append(('EN ', ElasticNet()))
+models.append(('KNN ', KNeighborsRegressor()))
+models.append(('CART ', DecisionTreeRegressor()))
+models.append(('SVR ', SVR()))
+#table = generateTable(stock, dates)
+#saveTable(stock, table)
 
+# --------------------------------- #
+
+# Prepares data, given stock name
 def prepareData(stock, column):
   df = pd.read_csv("stock_details/%s.csv"%(stock), index_col='Date')
   prices = df[[column]]
@@ -42,6 +54,7 @@ def prepareData(stock, column):
 
   return X, Y
 
+# Selection of model to use for testing
 def compareModel(models, X_train, X_validation, Y_train, Y_validation):
   # Test options and evaluation metric
   num_folds = 10
@@ -102,33 +115,9 @@ def predictPrice(stock, column, dates):
   """
   return pd.Series(predictions)
 
+# --------------------------------- #
 
-
-# Driver Code
-
-# Spot-Check Algorithms
-models = []
-models.append(('LR ', LinearRegression()))
-models.append(('LASSO ', Lasso()))
-models.append(('EN ', ElasticNet()))
-models.append(('KNN ', KNeighborsRegressor()))
-models.append(('CART ', DecisionTreeRegressor()))
-models.append(('SVR ', SVR()))
-
-'''
-print("Low")
-predictions_low = predictPrice(stock, 'Low', dates)
-#for i in range(0,5):
-#    print("For date: ", dates[i]," Price = ", predictions_low[len(predictions_low)-5+i])
-
-
-print("High")
-predictions_high = predictPrice(stock, "High", dates)
-for i in range(0,5):
-    print("For date: ", dates[i]," Price = ", predictions_high[len(predictions_high)-5+i])
-'''
-
-def generateTable(stock=stock, dates=dates):
+def generateTable(stock, dates=dates):
   predictions_low = predictPrice(stock, 'Low', dates)[-len(dates):].reset_index(drop=True)
   predictions_high = predictPrice(stock, "High", dates)[-len(dates):].reset_index(drop=True)
   
@@ -137,9 +126,14 @@ def generateTable(stock=stock, dates=dates):
   table['Pred_Difference'] = table['Pred_High'] - table['Pred_Low']
   table['Pred_Difference_Percentage'] = (table['Pred_Difference'] / table['Pred_Low'])*100
 
-
   return table
 
 
-table = generateTable(stock, dates)
+def saveTable(stock, table):
 
+  stockname = [stock for i in range(len(table))]
+  table = pd.concat([pd.Series(stockname).rename("Stock_Name"), table], axis=1)
+
+  table.to_csv('stock_pred.csv', mode='a', header=False)
+
+# --------------------------------- #

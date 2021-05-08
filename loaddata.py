@@ -1,7 +1,11 @@
-# Loads data from Investpy
-# Passengers - Frosthack
-# Author: Pratiksha Jain
+"""
+loaddata.py - Loads historical (and financial) data from investpy
 
+@authors: Pratiksha Jain, Shubham Saurav
+"""
+# --------------------------------- #
+
+# Imports needed
 import time
 import numpy as np
 import pandas as pd
@@ -11,6 +15,10 @@ from os.path import isfile, join
 import warnings
 
 warnings.filterwarnings("ignore")
+
+# --------------------------------- #
+
+#### TESTING USAGE ONLY ####
 '''
 #df = investpy.get_stock_historical_data(stock='HDBK',
                                         country='India',
@@ -34,13 +42,15 @@ data = investpy.get_stock_financial_summary(stock='HDBK',
 data2 = investpy.get_stock_financial_summary(stock='HDBK',
                                         country='India', summary_type='cash_flow_statement', period='annual')
 data3 = investpy.get_stock_financial_summary(stock='HDBK',
-                                        country='India', summary_type='balance_sheet', period='quarterly')                                                                                
+                                        country='India', summary_type='balance_sheet', period='quarterly')        
 print(data)
 print(data2)
 print(data3)
 '''
 
+# --------------------------------- #
 
+# Loads historical data of stock
 def loadHistoricalData(stock):
     df = investpy.get_stock_historical_data(stock=stock,
                                         country='India',
@@ -50,6 +60,7 @@ def loadHistoricalData(stock):
     df = df.drop('Currency', axis=1)
     df.to_csv('stock_details/%s.csv'%(stock))
 
+# loads for multiple stocks
 def loadStocks(specific_stocks=[], max_stocks=20):
     stocks = investpy.stocks.get_stocks_list(country='India')
     stocks = [i for i in stocks if not i in specific_stocks]
@@ -58,11 +69,10 @@ def loadStocks(specific_stocks=[], max_stocks=20):
 
     for stock in stocks_req:
         loadHistoricalData(stock)
-        print(stock, ' done')
-    
-    return stocks_req
+        print(stock, ' loaded')
 
 
+# checks if stock is loaded, if it isnt (and exists), then loads it
 def loadStock(stock):
     stocks = investpy.stocks.get_stocks_list(country='India')
     stocks_loaded = [f for f in listdir('stock_details') if isfile(join('stock_details', f))]
@@ -74,9 +84,6 @@ def loadStock(stock):
     else:
         loadHistoricalData(stock)
         print(stock, ' loaded')
-        return 1
+        return 2
     
-
-#statuscode = loadStock('TISC')
-
-#loadStocks()
+# --------------------------------- #

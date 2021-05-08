@@ -1,17 +1,20 @@
-# WebScraping Stocks from MoneyControl
+"""
+cuurentData.py - Gets realtime data of stock
 
-# Author: Pratiksha Jain
+@authors: Pratiksha Jain, Shubham Saurav
+"""
+# --------------------------------- #
 
-
-#-------------------------------#
+# Imports needed
 
 import requests
 from bs4 import BeautifulSoup
 
+# --------------------------------- #
+
 # Write MoneyControl Stock URL here:
 #URL = 'https://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI'
 #URL = 'https://www.moneycontrol.com/india/stockpricequote/telecommunications-service/vodafoneidealimited/IC8'
-
 
 def getURL(stock):
     BASEURL = "https://in.investing.com/equities/"
@@ -25,7 +28,6 @@ def getURL(stock):
 
 
     return BASEURL
-
 
 
 def getCurrentPrice(stock):
@@ -42,3 +44,5 @@ def getCurrentPrice(stock):
 
     #print(price)
     return 10
+
+# --------------------------------- #

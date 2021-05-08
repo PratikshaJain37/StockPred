@@ -1,15 +1,35 @@
+"""
+Stockpred.py - Predicting stock price using ML models on historical data
+
+@authors: Shubham Saurav, Pratiksha Jain
+"""
+# --------------------------------- #
+
+# Imports needed
+import pandas as pd
 from flask import Flask, render_template, request
 from loaddata import loadStock
-from Stockpred import generateTable
+from Stockpred import generateTable, saveTable
 from currentData import getCurrentPrice
 
 import warnings
-
-app = Flask(__name__)
 warnings.filterwarnings("ignore")
 
-portfolio = []
+# --------------------------------- #
+
+app = Flask(__name__)
+
+# portfolio is the main list which stores the values of headings
 headings = ['stock_name', 'quantity', 'buy_price', 'currentprice', 'predicted_high', 'predicted_low', 'currentreturn', 'predictedreturn', 'decision']
+portfolio = []
+current_date = ["2021-5-10"]
+dates = ["2021-5-9", "2021-5-10", "2021-5-11", "2021-5-12", "2021-5-13"]
+
+
+# get stock-data_predicted
+stock_pred = pd.read_csv("stock_pred.csv")
+
+# Views of app
 
 @app.route('/')
 def student():
@@ -23,10 +43,12 @@ def result():
       if stock_loadstatus == 0:
          return render_template("error.html")
       else:
-         table = generateTable(stock)
-         headings = table.columns
-         data = table.values.tolist()
+         stock_table = stock_pred[(stock_pred.Stock_Name == stock) & (stock_pred.Date in dates)]
+         stock_table.drop(['Stock Name'], axis=1, inplace=True)
 
+         headings = ['Date','Pred_Low','Pred_High','Pred_Difference','Pred_Difference_Percentage']
+
+         data = stock_table.values.tolist()
 
          return render_template("result.html",stock=stock, headings=headings, data=data)
 
@@ -36,7 +58,7 @@ def addStock():
 
 @app.route("/portfolio", methods=['GET', 'POST'])
 def add():
-   global portfolio
+   global portfolio, dates
    if request.method == 'POST':
       stock_name = request.form['stockname']
       quantity = int(request.form['quantity'])
@@ -48,7 +70,8 @@ def add():
       else:
          
          currentprice = getCurrentPrice(stock_name)
-         table = generateTable(stock_name, dates=["2021-5-10"])
+
+         table = generateTable(stock_name, dates=current_date)
 
          predicted_high = table.loc[0, 'Pred_High']
          predicted_low = table.loc[0, 'Pred_Low']
@@ -65,7 +88,9 @@ def add():
    return render_template('portfolio.html', portfolio=portfolio, headings=headings) 
 
 
-
+# --------------------------------- #
 
 if __name__ == '__main__':
    app.run(debug = True)
+
+# --------------------------------- #
