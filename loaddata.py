@@ -1,4 +1,4 @@
-# Loads data from MoneyControl
+# Loads data from Investpy
 # Passengers - Frosthack
 # Author: Pratiksha Jain
 
@@ -6,7 +6,11 @@ import time
 import numpy as np
 import pandas as pd
 import investpy
+from os import listdir
+from os.path import isfile, join
+import warnings
 
+warnings.filterwarnings("ignore")
 '''
 #df = investpy.get_stock_historical_data(stock='HDBK',
                                         country='India',
@@ -41,7 +45,7 @@ def loadHistoricalData(stock):
     df = investpy.get_stock_historical_data(stock=stock,
                                         country='India',
                                         from_date='01/01/2010',
-                                        to_date='01/01/2020')
+                                        to_date='07/05/2021')
 
     df = df.drop('Currency', axis=1)
     df.to_csv('stock_details/%s.csv'%(stock))
@@ -58,6 +62,21 @@ def loadStocks(specific_stocks=[], max_stocks=20):
     
     return stocks_req
 
-stocks = loadStocks()
 
+def loadStock(stock):
+    stocks = investpy.stocks.get_stocks_list(country='India')
+    stocks_loaded = [f for f in listdir('stock_details') if isfile(join('stock_details', f))]
 
+    if not stock in stocks:
+        return 0
+    elif stock in stocks_loaded:
+        return 1
+    else:
+        loadHistoricalData(stock)
+        print(stock, ' loaded')
+        return 1
+    
+
+#statuscode = loadStock('TISC')
+
+#loadStocks()

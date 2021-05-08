@@ -17,13 +17,16 @@ from sklearn.svm import SVR
 from sklearn import ensemble
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
+import warnings
+warnings.filterwarnings("ignore")
+
 
 
 
 # Put stock here
 stock = 'ABB'
 # Future prediction, add dates here for which you want to predict
-dates = ["2020-12-23", "2020-12-24", "2020-12-25", "2020-12-26", "2020-12-27",]
+dates = ["2021-5-9", "2021-5-10", "2021-5-11", "2021-5-12", "2021-5-13"]
  
 
 def prepareData(stock, column):
@@ -125,7 +128,7 @@ for i in range(0,5):
     print("For date: ", dates[i]," Price = ", predictions_high[len(predictions_high)-5+i])
 '''
 
-def calculateProfit(stock, dates):
+def generateTable(stock=stock, dates=dates):
   predictions_low = predictPrice(stock, 'Low', dates)[-len(dates):].reset_index(drop=True)
   predictions_high = predictPrice(stock, "High", dates)[-len(dates):].reset_index(drop=True)
   
@@ -138,7 +141,5 @@ def calculateProfit(stock, dates):
   return table
 
 
-table = calculateProfit(stock, dates)
+table = generateTable(stock, dates)
 
-print(stock)
-print(table)

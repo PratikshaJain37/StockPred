@@ -1,14 +1,10 @@
 from flask import Flask, render_template, request
+from loaddata import loadStock
+from Stockpred import generateTable
+import warnings
+
 app = Flask(__name__)
-
-
-headings = ("Date","Predicted Price")
-data= (
-   ("10/12/2020", "235"),
-   ("11/12/2020", "240"),
-   ("12/12/2020", "245")
-
-)
+warnings.filterwarnings("ignore")
 
 @app.route('/')
 def student():
@@ -17,8 +13,17 @@ def student():
 @app.route('/result',methods = ['POST', 'GET'])
 def result():
    if request.method == 'POST':
-      result = request.form['impath']
-      return render_template("result.html",result = result, headings=headings, data=data)
+      stock = request.form['impath']
+      stock_loadstatus = loadStock(stock)
+      if stock_loadstatus == 0:
+         return render_template("error.html")
+      else:
+         table = generateTable(stock)
+         headings = table.columns
+         data = table.values.tolist()
+
+
+         return render_template("result.html",stock=stock, headings=headings, data=data)
 
 if __name__ == '__main__':
    app.run(debug = True)
