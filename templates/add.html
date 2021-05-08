@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+   <div class="jumbotron text-center">
+      <h1> <a href="#">StockPred</a> </h1>
+         <p class="lead"> We Predict Future :) </p>
+   </div>
+
+      <form action = "/portfolio" method = "POST">
+         <p>Enter the name of the company <input type ="text" name = "stockname" /></p>
+         <p>Enter the quantity bought <input type ="number" name = "quantity" /></p>
+         <p>Enter the buying price <input type ="number" name = "buy_price" /></p>
+         <p><input type = "submit" value = "Submit" /></p>
+
+      </form>      
+
+{% endblock %}
