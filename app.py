@@ -46,22 +46,23 @@ def result():
       stock_loadstatus = loadStock(stock)
       if stock_loadstatus == 0:
          return render_template("error.html")
-      else:
+      if stock_loadstatus == 2:
+         saveTable(stock, generateTable(stock, dates))
          
-         stock_table = stock_pred[stock_pred.Stock_Name == stock]
-         stock_table_dates = pd.DataFrame()
-         for date in dates:
-            stock_table_dates = pd.concat([stock_table_dates,stock_table[stock_table.Date == date]], ignore_index=True)
-         
-         stock_table = stock_table_dates
+      stock_table = stock_pred[stock_pred.Stock_Name == stock]
+      stock_table_dates = pd.DataFrame()
+      for date in dates:
+         stock_table_dates = pd.concat([stock_table_dates,stock_table[stock_table.Date == date]], ignore_index=True)
+      
+      stock_table = stock_table_dates
 
-         stock_table.drop(['Stock_Name'], axis=1, inplace=True)
+      stock_table.drop(['Stock_Name'], axis=1, inplace=True)
 
-         headings = ['Date','Pred_Low','Pred_High','Pred_Difference','Pred_Difference_Percentage']
+      headings = ['Date','Pred_Low','Pred_High','Pred_Difference','Pred_Difference_Percentage']
 
-         data = stock_table.values.tolist()
+      data = stock_table.values.tolist()
 
-         return render_template("result.html",stock=stock, headings=headings, data=data)
+      return render_template("result.html",stock=stock, headings=headings, data=data)
 
 @app.route('/add')
 def addStock():
@@ -81,8 +82,12 @@ def add():
       else:
          
          currentprice = getCurrentPrice(stock_name)
-
-         table = generateTable(stock_name, dates=current_date)
+         stock_table = stock_pred[stock_pred.Stock_Name == stock]
+         stock_table_dates = pd.DataFrame()
+         for date in dates:
+            stock_table_dates = pd.concat([stock_table_dates,stock_table[stock_table.Date == date]], ignore_index=True)
+         
+         table = stock_table_dates
 
          predicted_high = table.loc[0, 'Pred_High']
          predicted_low = table.loc[0, 'Pred_Low']
