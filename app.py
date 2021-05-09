@@ -83,7 +83,7 @@ def add():
       if stock_loadstatus == 0:
          return render_template("error.html")
       if stock_loadstatus == 2:
-         saveTable(stock, generateTable(stock_name, dates))
+         saveTable(stock_name, generateTable(stock_name, dates))
          stock_pred = pd.read_csv("stock_pred.csv", index_col=0)
          
       currentprice = getCurrentPrice(stock_name)
@@ -93,7 +93,6 @@ def add():
          stock_table_dates = pd.concat([stock_table_dates,stock_table[stock_table.Date == date]], ignore_index=True)
       
       table = stock_table_dates
-      print(stock_table_dates)
 
       predicted_high = table.loc[0, 'Pred_High']
       predicted_low = table.loc[0, 'Pred_Low']
