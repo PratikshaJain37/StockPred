@@ -36,7 +36,7 @@ models.append(('KNN ', KNeighborsRegressor()))
 models.append(('CART ', DecisionTreeRegressor()))
 models.append(('SVR ', SVR()))
 #table = generateTable(stock, dates)
-#saveTable(stock, table)
+#saveTable(stock, generateTable(stock, dates))
 
 # --------------------------------- #
 
@@ -137,3 +137,5 @@ def saveTable(stock, table):
   table.to_csv('stock_pred.csv', mode='a', header=False)
 
 # --------------------------------- #
+
+saveTable("INFY", generateTable("INFY", dates))

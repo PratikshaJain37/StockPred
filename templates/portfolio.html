@@ -1,12 +1,7 @@
 {% extends 'layout.html' %}
+{% block title %} <h2> Portfolio </h2> {% endblock %}
 
 {% block body %}
-   <div class="jumbotron text-center">
-      <h1> <a href="/">StockPred</a> </h1>
-         <p class="lead"> We Predict Future :) </p>
-      <h2> Portfolio </h2>
-   </div>
-
    <table class="table">
       <tr class="table__header">
       {% for header in headings %}
@@ -17,7 +12,7 @@
       {% for row in portfolio %}
       <tr class="table__row">
          {% for cell in row %}
-         <td class="table__cell"> {{ cell }}</td>
+         <td class="table__cell"> {{ "%-8s" | format(cell) }} </td>
          {% endfor %}
       </tr>
       {% endfor %}

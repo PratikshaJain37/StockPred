@@ -1,11 +1,8 @@
 {% extends 'layout.html' %}
 
-{% block body %}
+{% block title %} <h2> Add Stock to Portfolio </h2> {% endblock %}
 
-   <div class="jumbotron text-center">
-      <h1> <a href="#">StockPred</a> </h1>
-         <p class="lead"> We Predict Future :) </p>
-   </div>
+{% block body %}
 
       <form action = "/portfolio" method = "POST">
          <p>Enter the name of the company <input type ="text" name = "stockname" /></p>

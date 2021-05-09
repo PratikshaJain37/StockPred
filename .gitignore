@@ -2,3 +2,4 @@ venv/
 *.pdf
 __pycache__/
 StockSelection.py
+*.mp4

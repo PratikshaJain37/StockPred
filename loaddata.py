@@ -76,6 +76,7 @@ def loadStocks(specific_stocks=[], max_stocks=20):
 def loadStock(stock):
     stocks = investpy.stocks.get_stocks_list(country='India')
     stocks_loaded = [f for f in listdir('stock_details') if isfile(join('stock_details', f))]
+    stocks_loaded = [f.replace('.csv', '') for f in stocks_loaded]
 
     if not stock in stocks:
         return 0
