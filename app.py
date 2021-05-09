@@ -41,14 +41,17 @@ def about():
 
 @app.route('/result',methods = ['POST', 'GET'])
 def result():
+   global stock_pred
    if request.method == 'POST':
       stock = request.form['impath']
       stock_loadstatus = loadStock(stock)
+      
       if stock_loadstatus == 0:
          return render_template("error.html")
       if stock_loadstatus == 2:
          saveTable(stock, generateTable(stock, dates))
-         
+         stock_pred = pd.read_csv("stock_pred.csv", index_col=0)
+      
       stock_table = stock_pred[stock_pred.Stock_Name == stock]
       stock_table_dates = pd.DataFrame()
       for date in dates:
@@ -70,7 +73,7 @@ def addStock():
 
 @app.route("/portfolio", methods=['GET', 'POST'])
 def add():
-   global portfolio, dates
+   global portfolio, dates, stock_pred
    if request.method == 'POST':
       stock_name = request.form['stockname']
       quantity = int(request.form['quantity'])
@@ -79,27 +82,30 @@ def add():
       stock_loadstatus = loadStock(stock_name)
       if stock_loadstatus == 0:
          return render_template("error.html")
+      if stock_loadstatus == 2:
+         saveTable(stock, generateTable(stock_name, dates))
+         stock_pred = pd.read_csv("stock_pred.csv", index_col=0)
+         
+      currentprice = getCurrentPrice(stock_name)
+      stock_table = stock_pred[stock_pred.Stock_Name == stock_name]
+      stock_table_dates = pd.DataFrame()
+      for date in dates:
+         stock_table_dates = pd.concat([stock_table_dates,stock_table[stock_table.Date == date]], ignore_index=True)
+      
+      table = stock_table_dates
+      print(stock_table_dates)
+
+      predicted_high = table.loc[0, 'Pred_High']
+      predicted_low = table.loc[0, 'Pred_Low']
+      currentreturn = (currentprice - buy_price) * quantity
+      predictedreturn = (predicted_high - buy_price) * quantity
+      
+      if currentreturn > 0:
+         decision = "SELL"
       else:
-         
-         currentprice = getCurrentPrice(stock_name)
-         stock_table = stock_pred[stock_pred.Stock_Name == stock]
-         stock_table_dates = pd.DataFrame()
-         for date in dates:
-            stock_table_dates = pd.concat([stock_table_dates,stock_table[stock_table.Date == date]], ignore_index=True)
-         
-         table = stock_table_dates
+         decision = "KEEP"
 
-         predicted_high = table.loc[0, 'Pred_High']
-         predicted_low = table.loc[0, 'Pred_Low']
-         currentreturn = (currentprice - buy_price) * quantity
-         predictedreturn = (predicted_high - buy_price) * quantity
-         
-         if predictedreturn > 0:
-            decision = "SELL"
-         else:
-            decision = "KEEP"
-
-         portfolio.append([stock_name, quantity, buy_price, currentprice, predicted_high, predicted_low, currentreturn, predictedreturn, decision])
+      portfolio.append([stock_name, quantity, buy_price, currentprice, predicted_high, predicted_low, currentreturn, predictedreturn, decision])
    
    return render_template('portfolio.html', portfolio=portfolio, headings=headings) 
 
