@@ -27,13 +27,17 @@ dates = ["2021-5-9", "2021-5-10", "2021-5-11", "2021-5-12", "2021-5-13"]
 
 
 # get stock-data_predicted
-stock_pred = pd.read_csv("stock_pred.csv")
+stock_pred = pd.read_csv("stock_pred.csv", index_col=0)
 
 # Views of app
 
 @app.route('/')
 def student():
    return render_template('student.html')
+
+@app.route('/about')
+def about():
+   return render_template('about.html')
 
 @app.route('/result',methods = ['POST', 'GET'])
 def result():
@@ -43,8 +47,15 @@ def result():
       if stock_loadstatus == 0:
          return render_template("error.html")
       else:
-         stock_table = stock_pred[(stock_pred.Stock_Name == stock) & (stock_pred.Date in dates)]
-         stock_table.drop(['Stock Name'], axis=1, inplace=True)
+         
+         stock_table = stock_pred[stock_pred.Stock_Name == stock]
+         stock_table_dates = pd.DataFrame()
+         for date in dates:
+            stock_table_dates = pd.concat([stock_table_dates,stock_table[stock_table.Date == date]], ignore_index=True)
+         
+         stock_table = stock_table_dates
+
+         stock_table.drop(['Stock_Name'], axis=1, inplace=True)
 
          headings = ['Date','Pred_Low','Pred_High','Pred_Difference','Pred_Difference_Percentage']
 

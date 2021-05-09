@@ -10,7 +10,7 @@ We Predict Stock Prices using AI/ML.
 THEME: FINANCE AND TECHNOLOGY 
 
 BRIEF:
-With the help of ML models, we predict the future price of stocks in regular time intervals, and on that basis, suggest a portfolio of stocks to invest in, given the users budget and time requirements.
+With the help of ML models, we predict the future price of stocks in regular time intervals, and on that basis, suggest a portfolio of stocks to invest in, given the users requirements.
 We load data using libraries such as investpy, and run our models on it. On that basis, we suggest the best stocks to invest in. The information that we use is mainly based on historical data of the stock, and the volume of it. The user interface is made using Flask, and it emphasizes user friendliness
 
 HOW TO RUN THE CODE:
